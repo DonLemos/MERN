@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import MovieDataService from '../services/movies'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import MovieDataService from '../services/movies';
+import { Link, useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
@@ -11,6 +11,7 @@ import moment from 'moment';
 
 
 const Movie = props => {
+    const { id } = useParams();
     const [movie, setMovie] = useState({
         id: null,
         title: "",
@@ -28,8 +29,9 @@ const Movie = props => {
             })
     }
     useEffect(() => {
-        getMovie(props.match.params.id)
-    }, [props.match.params.id])
+        getMovie(id);
+    }, [id]);
+
     return (
         <div>
             <Container>
@@ -51,11 +53,10 @@ const Movie = props => {
                             </Card.Body>
                         </Card>
                         <br></br>
-
                         {movie.reviews.map((review, index) => {
                             return (
-                                <Media key={index}>
-                                    <Media.Body>
+                                <Card key={index}>
+                                    <Card.Body>
                                         <h5>{review.name + " reviewed on "} {moment(review.date).format("Do MMMM YYYY")}</h5>
                                         <p>{review.review}</p>
                                         {props.user && props.user.id === review.user_id &&
@@ -70,8 +71,8 @@ const Movie = props => {
                                                 <Col><Button variant="link">Delete</Button></Col>
                                             </Row>
                                         }
-                                    </Media.Body>
-                                </Media>
+                                    </Card.Body>
+                                </Card>
                             )
                         })}
                     </Col>
@@ -82,3 +83,4 @@ const Movie = props => {
 }
 
 export default Movie;
+
