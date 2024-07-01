@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import MovieDataService from '../services/movies';
-import { Link, useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import moment from 'moment';
-
 
 const Movie = props => {
     const { id } = useParams();
@@ -17,21 +15,26 @@ const Movie = props => {
         title: "",
         rated: "",
         reviews: []
-    })
+    });
+
     const getMovie = id => {
         MovieDataService.get(id)
             .then(response => {
-                setMovie(response.data)
-                console.log(response.data)
+                setMovie(response.data);
+                console.log(response.data);
             })
             .catch(e => {
-                console.log(e)
-            })
-    }
+                console.log(e);
+            });
+    };
+
     useEffect(() => {
-        getMovie(id);
+        if (id) {
+            getMovie(id);
+        }
     }, [id]);
 
+    
     return (
         <div>
             <Container>
@@ -83,4 +86,5 @@ const Movie = props => {
 }
 
 export default Movie;
+
 
