@@ -66,6 +66,7 @@ router.get('/:id', async (request, response) => {
 });
 
 //Route For Updating a Book
+//Route For Updating a Book
 router.put('/:id', async (request, response) => {
     try {
         if (
@@ -80,18 +81,19 @@ router.put('/:id', async (request, response) => {
 
         const { id } = request.params;
 
-        const result = await Book.findByIdAndUpdate(id, request.body);
+        const result = await Book.findByIdAndUpdate(id, request.body, { new: true });
 
         if (!result) {
             return response.status(404).json({ message: "Book not found!" });
         }
-        return response.status(404).json({ message: "Book updated successfully!" })
+        return response.status(200).json({ message: "Book updated successfully!", data: result });
 
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
     }
 });
+
 
 //Route For Deleting A Book
 router.delete("/:id", async (request, response) => {

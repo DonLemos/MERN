@@ -24,7 +24,7 @@ const EditBook = () => {
         setLoading(false);
       }).catch((error) => {
         setLoading(false);
-        alert('An error happened. Please Chack console');
+        alert('An error happened. Please Check Your console');
         console.log(error);
       });
   }, [])
