@@ -13,7 +13,7 @@ module.exports = {
       }
     },
   
-    createEvent: async (args) => {
+    createEvent: async args => {
       const event = new Event({
         title: args.eventInput.title,
         description: args.eventInput.description,
@@ -39,5 +39,5 @@ module.exports = {
         console.log(err);
         throw err;
       }
-    },
+    }
 };
