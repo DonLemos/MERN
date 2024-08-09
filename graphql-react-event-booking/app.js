@@ -1,22 +1,38 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const graphqlHttp = require('express-graphql');
-const { scheduler } = require('timers/promises');
-const { graphql } = require('graphql');
+const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
+const mongoose = require ("mongoose")
 
 const app = express();
 
+const events = [];
+
 app.use(bodyParser.json());
 
-app.use('/graphql', graphqlHttp({
+app.use('/graphql', graphqlHTTP({
     schema: buildSchema(`
-        type: RootQuery {
-            events: [String]
+        type Event {
+        _id: ID!
+        title: String!
+        description: String!
+        price: Float!
+        date: String!
+        }
+
+        input EventInput {
+        title: String!
+        description: String!
+        price: Float!
+        date: String!
+        }
+
+        type RootQuery {
+            events: [Event!]!
         }
 
         type RootMutation {
-        
+            createEvent(eventInput: EventInput): Event
         }
 
         schema {
@@ -24,11 +40,38 @@ app.use('/graphql', graphqlHttp({
             mutation: RootMutation
         }
     `),
-    rootValue: {}
-}))
+    rootValue: {
+        events: () => {
+            return ['Romantic Cooking', 'Sailing', 'All-Night Cooking'];
+        },
+
+        createEvent: (args) => {
+            const event = {
+                _id: Math.random().toString(),
+                title: args.eventInput.title,
+                description: args.eventInput.description,
+                price: +args.eventInput.price,
+                date: args.eventInput.date
+            };
+
+            events.push(event);
+            return event;
+        }
+    },
+    graphiql: true
+})
+);
 
 app.get('/', (req, res, next) => {
     res.send('Hello World!');
+});
+
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.ayin7.mongodb.net/`)
+
+.then(() => {
+    app.listen(3000);
 })
 
-app.listen(3000);
+.catch(err => {
+    console.log(err);
+});
